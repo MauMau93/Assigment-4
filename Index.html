@@ -87,7 +87,7 @@
             }
 
             function dateSelector(d) {
-                d.sort((a,b) => d3.ascending(a.date, b.date));    
+                d.sort((a,b) => d3.descending(a.value, b.value));    
                 htmlNode = d3.select("#dateSelector");
                 htmlNode.append("label")
                 .attr("for", "dates")
