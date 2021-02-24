@@ -45,6 +45,10 @@
 
         <script>
             csv_url = false ? "category-brands.csv" : "https://raw.githubusercontent.com/bernardo-dauria/2021-02-10-example/main/category-brands.csv";
+
+            let plottedData = null;
+            let showElements = 10;
+
             cs = {
                     "date": "fecha",
                     "name": "nombre",
@@ -58,6 +62,8 @@
                     .selectAll("tr")
                     .data(d)
                     .join("tr")
+                        .attr("id", x => x.name)
+                        .on("click", (event, row) => selectRow(row))
                     .selectAll("td")
                     .data(e => columns.map(x => e[x]))
                     .join("td")
@@ -86,8 +92,12 @@
                 updateSelect()
             }
 
+            function resetChart() {
+                updateChart(data);
+            }
+
             function dateSelector(d) {
-                d.sort((a,b) => d3.descending(a.value, b.value));    
+                d.sort((a,b) => d3.descending(a.value, b.value));
                 htmlNode = d3.select("#dateSelector");
                 htmlNode.append("label")
                 .attr("for", "dates")
@@ -111,6 +121,8 @@
             }  
 
             function updateChart(data) {
+                plottedData = data;
+                data = data.slice(0, showElements);
                 svg =  d3.select("#myCanvas");
                 w = svg.node().width.baseVal.value;
                 h = svg.node().height.baseVal.value;
@@ -131,6 +143,7 @@
                     .attr('height', d => y(d.value))
                     .attr('width', x(1)*0.95)
                     .attr('fill', d => color(d.category))
+                    .attr('id', d => 'rectangle_'+d.name)
 
                 svgBind.enter()
                     .append("text")
@@ -145,6 +158,12 @@
 
             function colorP() {
                 d3.selectAll("p").style("color", "red");
+            }
+
+            function selectRow(row) {
+                console.log(row);
+                resetChart();
+                d3.select("#rectangle_"+row.name).attr('fill', 'black');
             }
         </script>
     </body>
